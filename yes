@@ -1,5 +1,39 @@
 -- // Load
 
+local HttpService = game:GetService("HttpService")
+local keyURL = "https://pastebin.com/raw/rvEuneZj" -- URL to your key list
+
+-- Function to check key validity
+local function checkKey(inputKey)
+    local success, response = pcall(function()
+        return HttpService:GetAsync(keyURL) -- Fetch key list
+    end)
+
+    if success then
+        local validKeys = response:split("\n") -- Convert to a table
+        for _, key in ipairs(validKeys) do
+            if key == inputKey then
+                print("Key is valid! Executing main script...")
+                return true
+            end
+        end
+        print("Invalid key. Please try again.")
+        return false
+    else
+        print("Error fetching keys from server.")
+        return false
+    end
+end
+
+-- Example Usage
+local userInputKey = "YOUR_INPUT_KEY_HERE" -- Replace this with user input
+if checkKey(userInputKey) then
+    -- Load main script
+    loadstring(game:HttpGet("https://your-mainscript-url.com"))()
+else
+    print("Access Denied.")
+end
+
 local startupArgs = ({...})[1] or {}
 
 if getgenv().library ~= nil then
